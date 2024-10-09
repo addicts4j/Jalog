@@ -127,11 +127,19 @@ public class Logger {
 
         if (!logFile.exists() || !logFile.isFile()) {
             try {
-                logFile.getParentFile().mkdirs();
+                logFile.getAbsoluteFile().getParentFile().mkdirs();
                 logFile.createNewFile();
             } catch (Exception e) {
                 System.out.println("Jalog Logger Error: Could not create log file for the logger named '" + name + "'");
-                System.out.println("Error info: " + e);
+
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                e.printStackTrace(pw);
+
+                int lastNewLineIndex = sw.toString().lastIndexOf("\n");
+                String stackTrace = sw.toString().substring(0, lastNewLineIndex);
+
+                System.out.println("Error info: " + stackTrace);
             }
         }
 
@@ -139,7 +147,15 @@ public class Logger {
             writer.write(toPrint + System.lineSeparator());
         } catch (Exception e) {
             System.out.println("Jalog Logger Error: Could not write to log file for the logger named '" + name + "'");
-            System.out.println("Error info: " + e);
+
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+
+            int lastNewLineIndex = sw.toString().lastIndexOf("\n");
+            String stackTrace = sw.toString().substring(0, lastNewLineIndex);
+
+            System.out.println("Error info: " + stackTrace);
         }
     }
 
